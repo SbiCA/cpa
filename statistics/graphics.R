@@ -26,7 +26,7 @@ title(main="execution times overview", font.main=4)
 tn <- executionTimeInSeconds[1]
 speedUp <-tn/executionTimeInSeconds
 
-plot(speedUp, ylab="speed up s(n,p)",type="b",col="red",xlab="# threads",xaxt = "n")
+plot(speedUp, ylab="speed up",type="b",col="red",xlab="# threads",xaxt = "n")
 
 axis(1,at=1:7, lab=numberOfThreads)
-title(main="speed up", font.main=4)
+title(main="speed up s(n,p)", font.main=4)
