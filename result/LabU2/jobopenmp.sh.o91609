@@ -1,0 +1,24 @@
+OMP_NUM_THREADS=2
+looptime: 2.433257 
+El mayor primo que cabe en 8 bytes es 18446744073709551557.
+OMP_NUM_THREADS=4
+looptime: 2.449269 
+El mayor primo que cabe en 8 bytes es 18446744073709551557.
+OMP_NUM_THREADS=6
+looptime: 2.479947 
+El mayor primo que cabe en 8 bytes es 18446744073709551557.
+OMP_NUM_THREADS=8
+looptime: 2.473895 
+El mayor primo que cabe en 8 bytes es 18446744073709551557.
+OMP_NUM_THREADS=10
+looptime: 2.482052 
+El mayor primo que cabe en 8 bytes es 18446744073709551557.
+OMP_NUM_THREADS=12
+looptime: 2.452480 
+El mayor primo que cabe en 8 bytes es 18446744073709551557.
+OMP_NUM_THREADS=14
+looptime: 2.495277 
+El mayor primo que cabe en 8 bytes es 18446744073709551557.
+OMP_NUM_THREADS=16
+looptime: 2.466935 
+El mayor primo que cabe en 8 bytes es 18446744073709551557.

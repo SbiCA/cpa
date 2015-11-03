@@ -27,6 +27,35 @@
 \usepackage{natbib} % Required to change bibliography style to APA
 \usepackage{amsmath} % Required for some math elements 
 
+\usepackage{listings} 
+\usepackage{xcolor} 
+
+\definecolor{mygray}{rgb}{0.4,0.4,0.4}
+\definecolor{myorange}{rgb}{1.0,0.4,0}
+%http://tex.stackexchange.com/questions/144503/why-does-a-space-destroy-my-keywords-in-listingspackage
+
+\lstset{
+ language=C,
+basicstyle=\footnotesize\sffamily\color{black},
+commentstyle=\color{mygray},
+frame=single,
+numbers=left,
+numbersep=5pt,
+numberstyle=\tiny\color{mygray},
+keywordstyle=\color{green!70!blue},
+showspaces=false,
+showstringspaces=false,
+stringstyle=\color{myorange},
+tabsize=2,  
+  morekeywords={
+    omp,
+    parallel,
+    for,    
+  }
+  alsoother={\#},
+  otherkeywords={\#pragma,\#define,\#ifdef,\#endif,\#else},
+}
+
 % Fall mal eigene margins definiert werden müssen
 %\usepackage{geometry}
 % \geometry{
@@ -59,9 +88,9 @@
 \begin{center}
 \begin{tabular}{l r}
 Date Performed: & October 27, 2015 \\ % Date the experiment was performed
-Partners: & Simon Birrer \\ % Partner names
+Students: & Simon Birrer \\ % Partner names
 & Dominic Sch\"umann \\
-Instructor: & Professor Smith % Instructor/supervisor
+Instructor: & Francisco Javier Piris Ruano % Instructor/supervisor
 \end{tabular}
 \end{center}
 
@@ -73,18 +102,51 @@ Instructor: & Professor Smith % Instructor/supervisor
 
 \section{Biggest prime storable in 8 bytes}
 
-The Source for the solution is in the file \textit{primo\textunderscore  grande.c} 
+The Source for the solution is in the file \textit{primo\textunderscore  grande.c}. In the figure \ref{code_primogrande} you will see the changes applied to function primo of the original code.
+
+
+\begin{figure}[h]
+\label{code_primogrande}
+\begin{lstlisting}
+   int numberOfThreads;
+   int offset;
+   #ifdef _OPENMP
+   #pragma omp parallel
+   numberOfThreads = omp_get_num_threads();
+   offset = 2 * numberOfThreads;
+   #else
+   numberOfThreads = 1;
+   offset = 2;
+   #endif
+    
+    #pragma omp parallel private(i)
+    {
+      #ifdef _OPENMP
+      int threadIndex =  omp_get_thread_num();
+      int startIndex = (2 * threadIndex) + 3;
+      #else
+      int startIndex = 3;
+      #endif
+      for (i = startIndex; p && i <= s; i += offset)
+        if (n % i == 0) p = 0;          
+    }
+\end{lstlisting} 
+\caption{code changes primo grande}
+\end{figure}
+
 
 \subsection{Compiling without OpenMP}
 
-To use the program in both ways, either with or without OpenMP , we used the preproccessor directives. Now the compiler decides upon the arguments if the code will use OpenMP or not.\\
+To use the program in both ways, either with or without OpenMP , we used the preproccessor directives. Now the compiler decides upon the arguments if the code will use OpenMP or not for the passages where OpenMP function calls will happen.\\
 
-ToDo insert code sample
+This can be seen in figure \ref{code_primogrande} in lines 3-10 and 14-19.
 
-
+\pagebreak
 \subsection{Time measurement of parallelized version}
 
-\begin{figure}[ht]
+In figure \ref{ex12execution} are the measured times of executing the program with different numbers of threads using kahan.\\
+
+\begin{figure}[h]
 \centering
   \includegraphics[scale=0.35]{statistics/Ex12ResultGraph.png}
 	\caption{execution times for exercise 1.2}
@@ -92,12 +154,9 @@ ToDo insert code sample
 \end{figure}
 
 
-
-In figure \ref{ex12execution} are the measured times of executing the program with different numbers of threads using kahan.\\
-
 Since a node of kahan has 32 cores, the execution with 32 threads was the fastest. In addition the performance decreases if the number of threads will be increased. This is shown in figure \ref{ex12execution} and the overhead is even more visible in figure \ref{ex12speedUp} .
 
-\begin{figure}[ht]
+\begin{figure}[h]
 \centering
   \includegraphics[scale=0.35]{statistics/Ex12SpeedUpGraph.png}
 	\caption{speed up for exercise 1.2}
@@ -128,6 +187,7 @@ The Source for the solution of exercise \ref{ex21} is in the file
 \subsection{Exercise 2 printing workload}
 \label{ex22}
 
+\pagebreak
 
 \section{appendix}
 
@@ -143,6 +203,10 @@ time in seconds   & 55.571 & 27.850 & 13.931 & 7.019 & 4.349 & 2.580 & 2.741
 \end{tabular}
 \caption{execution time}
 \end{table}
+
+\listoffigures
+
+\listoftables
 
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
