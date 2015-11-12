@@ -1,0 +1,4 @@
+primo_numeros_seq with:
+OMP_NUM_THREADS=1
+looptime: 289.241694 seconds 
+Entre el 1 y el 100000000 hay 5761456 numeros primos.

@@ -89,7 +89,7 @@ tabsize=2,
 \begin{tabular}{l r}
 Date Performed: & October 27, 2015 \\ % Date the experiment was performed
 Students: & Simon Birrer \\ % Partner names
-& Dominic Sch\"umann \\
+& Dominic Sch\"urmann \\
 Instructor: & Francisco Javier Piris Ruano % Instructor/supervisor
 \end{tabular}
 \end{center}
@@ -155,8 +155,7 @@ In figure \ref{ex12execution} are the measured times of executing the program wi
 
 
 Since a node of kahan has 32 cores, the execution with 32 threads was the fastest. In addition the performance decreases if the number of threads will be increased. This is shown in figure \ref{ex12execution} and the overhead is even more visible in figure \ref{ex12speedUp} .
-
-TODO Describe why 64 slower
+As a result of this, the best speedup will be achieved with one thread for each processor.
 
 \begin{figure}[h]
 \centering
@@ -171,20 +170,115 @@ TODO Describe why 64 slower
 
 \section{Count primes in a range}
 
+TODO: rewrite!
+
 The Source for the solution of exercise \ref{ex21} is in the file
  \textit{primo\textunderscore numeros\textunderscore 1.c} and
- for exercise \ref{ex22} in file \textit{primo\textunderscore numeros\textunderscore 2.c}
+ for exercise \ref{ex22} in file \textit{primo\textunderscore numeros\textunderscore 2.c} \\
+ 
+In all code examples, where a time measurement was needed, following code was used to measure the time in seconds:
+ 
+\begin{figure}[h]
+\label{code_timemeasurement}
+\begin{lstlisting}
+  #ifdef _OPENMP
+  double t1 = omp_get_wtime();
+  #endif  
+  
+  //code for algorithm here
+  
+  #ifdef _OPENMP
+  double t2 = omp_get_wtime();
+  printf("looptime: %f seconds \n", t2-t1);
+  #endif
+\end{lstlisting} 
+\caption{execution time measurement}
+\end{figure} 
+ 
 
-\subsection{Exercise 1 with reduction clause}
-\label{ex21}
+\subsection{Measurement sequential execution}
+
+To measure the sequential time for the 
+\textit{primo\textunderscore numeros\textunderscore .c} code, we compiled the code with OpenMP. To achieve a sequential execution we defined the environment variable
+\textit{OMP\textunderscore NUM\textunderscore THREADS = 1}. \\
+The sequential execution took 289.24 seconds.
+
+
+\subsection{Measurement parallel most inner loop}
+
+Based on the exercise a measurement for the most inner loop does not make much sense, because it is really inefficient. Every execution without an if clause in the pragma omp definiton was terminated because of the walltime exceeding.
+
+\subsection{Measurement parallel most outer loop}
+
+The most efficient way to speedup the given exercise code is by parallelize the most outer loop. The following code changes where made to achieve this:
+
+\begin{figure}[h]
+\label{code_mostouterloop}
+\begin{lstlisting}
+  int numberOfThreads;
+  #pragma omp parallel
+  numberOfThreads = omp_get_num_threads();
+  n = 2; /* Por el 1 y el 2 */
+  #pragma omp parallel for reduction(+:n) schedule(runtime)
+  for (i = 3; i <= N; i += 2){
+      if (primo(i))
+      {
+         n++;
+      }
+  }
+\end{lstlisting} 
+\caption{parallelization of the most outer loop}
+\end{figure} 
+
+The environment variable was set to 32 Threads to achieve the most biggest speedup.\\
+
 \subsubsection{scheduling distribution}
 
+We checked the execution time for the same code with different scheduling distributions. Therefore we changed the environment variable \textit{OMP\textunderscore SCHEDULE}
 
-\begin{itemize}
-\item static 0, without chunk
-\item static 1, with chunk
-\item dynamic
-\end{itemize}
+\begin{figure}[h]
+\centering
+\label{table_scheduledistribution}
+\begin{tabular}{| l | l | l | l |}
+    \hline
+    schedule type & chunk size & execution time in [s]\\ 
+    \hline
+	static & 0 & 17.58 \\
+	\hline
+	static & 1 & 13.58 \\
+    \hline
+	dynamic & 0 & 14.18 \\
+    \hline
+    dynamic & 1 & 14.23 \\
+    \hline
+    dynamic & 2 & 13.52 \\
+    \hline
+\end{tabular}
+\caption{Measurement result for different schedule distribution}
+\end{figure}
+
+\subsection{Exercise 1 without reduction clause}
+\label{ex21}
+
+\begin{figure}[h]
+\label{code_withoutreduction}
+\begin{lstlisting}
+  int numberOfThreads;
+  #pragma omp parallel
+  numberOfThreads = omp_get_num_threads();
+  n = 2; /* Por el 1 y el 2 */
+  #pragma omp parallel for schedule(runtime)
+  for (i = 3; i <= N; i += 2){
+      if (primo(i))
+      {
+         #pragma omp atomic
+         n++;
+      }
+  }
+\end{lstlisting} 
+\caption{parallelization without reduction}
+\end{figure}
+
 
 \subsection{Exercise 2 printing workload}
 \label{ex22}
