@@ -1,0 +1,38 @@
+----------------------------
+primo_numeros_threadinfo with:
+OMP_NUM_THREADS=32
+OMP_SCHEDULE=static,1
+----------------------------
+thread 0 found 225174 primes
+thread 1 found 203641 primes
+thread 2 found 197037 primes
+thread 3 found 192850 primes
+thread 4 found 189772 primes
+thread 5 found 187659 primes
+thread 6 found 185689 primes
+thread 7 found 184104 primes
+thread 8 found 182785 primes
+thread 9 found 181685 primes
+thread 10 found 180379 primes
+thread 11 found 179574 primes
+thread 12 found 178963 primes
+thread 13 found 177814 primes
+thread 14 found 177467 primes
+thread 15 found 176540 primes
+thread 16 found 175928 primes
+thread 17 found 175330 primes
+thread 18 found 174811 primes
+thread 19 found 174285 primes
+thread 20 found 173767 primes
+thread 21 found 173577 primes
+thread 22 found 172957 primes
+thread 23 found 172515 primes
+thread 24 found 172152 primes
+thread 25 found 171824 primes
+thread 26 found 171280 primes
+thread 27 found 170903 primes
+thread 28 found 170747 primes
+thread 29 found 170273 primes
+thread 30 found 170268 primes
+thread 31 found 169704 primes
+Entre el 1 y el 100000000 hay 5761456 numeros primos.

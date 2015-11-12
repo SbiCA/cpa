@@ -164,18 +164,10 @@ As a result of this, the best speedup will be achieved with one thread for each 
 	\label{ex12speedUp}
 \end{figure}
 
-
-
 \pagebreak
 
 \section{Count primes in a range}
 
-TODO: rewrite!
-
-The Source for the solution of exercise \ref{ex21} is in the file
- \textit{primo\textunderscore numeros\textunderscore 1.c} and
- for exercise \ref{ex22} in file \textit{primo\textunderscore numeros\textunderscore 2.c} \\
- 
 In all code examples, where a time measurement was needed, following code was used to measure the time in seconds:
  
 \begin{figure}[h]
@@ -210,7 +202,9 @@ Based on the exercise a measurement for the most inner loop does not make much s
 
 \subsection{Measurement parallel most outer loop}
 
-The most efficient way to speedup the given exercise code is by parallelize the most outer loop. The following code changes where made to achieve this:
+The most efficient way to speedup the given exercise code is by parallelize the most outer loop. 
+The source is in the file \textit{primo\textunderscore numeros\textunderscore reduction.c}.
+The following code changes where made to achieve this:
 
 \begin{figure}[h]
 \label{code_mostouterloop}
@@ -230,13 +224,13 @@ The most efficient way to speedup the given exercise code is by parallelize the 
 \caption{parallelization of the most outer loop}
 \end{figure} 
 
-The environment variable was set to 32 Threads to achieve the most biggest speedup.\\
+The environment variable \textit{OMP\textunderscore NUM\textunderscore THREADS} was set to 32 Threads to achieve the best speedup.\\
 
 \subsubsection{scheduling distribution}
 
 We checked the execution time for the same code with different scheduling distributions. Therefore we changed the environment variable \textit{OMP\textunderscore SCHEDULE}
 
-\begin{figure}[h]
+\begin{table}[h]
 \centering
 \label{table_scheduledistribution}
 \begin{tabular}{| l | l | l | l |}
@@ -254,11 +248,14 @@ We checked the execution time for the same code with different scheduling distri
     dynamic & 2 & 13.52 \\
     \hline
 \end{tabular}
-\caption{Measurement result for different schedule distribution}
-\end{figure}
+\caption{measurement result for different schedule distribution}
+\end{table}
 
-\subsection{Exercise 1 without reduction clause}
+\subsection{Exercise 1: Without reduction clause}
 \label{ex21}
+
+The whole parallelization can be done without using a reduction for the variable n. In this code segment we used an openMP atomic clause to achieve the same behaviour.
+The source is in the file \textit{primo\textunderscore numeros\textunderscore without\textunderscore reduction.c}.
 
 \begin{figure}[h]
 \label{code_withoutreduction}
@@ -279,18 +276,58 @@ We checked the execution time for the same code with different scheduling distri
 \caption{parallelization without reduction}
 \end{figure}
 
+\pagebreak
 
-\subsection{Exercise 2 printing workload}
+\subsection{Exercise 2: Printing found primes for each thread}
 \label{ex22}
+
+To find out which thread found how many prime numbers, we had to save the information for each thread in a vector. We use a vector based on the index of each thread and because of this we do not have to care about race conditions or any other problem based on public variables.
+The source is in the file \textit{primo\textunderscore numeros\textunderscore threadinfo.c}.
+
+\begin{figure}[h]
+\label{code_printprimeseachthread}
+\begin{lstlisting}
+  int numberOfThreads;
+  #pragma omp parallel
+  numberOfThreads = omp_get_num_threads();
+  n = 2; /* Por el 1 y el 2 */
+  
+  int* primesFoundPerThread = 
+  	(int*) calloc(numberOfThreads, sizeof(int));
+  	
+  for(i = 0; i < numberOfThreads; i++){
+    primesFoundPerThread[i] = 0;
+  }
+  
+  #pragma omp parallel for
+  for (i = 3; i <= N; i += 2){
+
+      if (primo(i))
+      {
+        int threadId = omp_get_thread_num();
+        primesFoundPerThread[threadId]++;
+         #pragma omp atomic
+         n++;
+      }
+  }
+  
+  for(i = 0; i < numberOfThreads; i++){
+    printf("thread %i: %i primes\n",i,primesFoundPerThread[i]);
+  }
+\end{lstlisting} 
+\caption{printing found primes by each thread}
+\end{figure}
+
+If we run this code with a static distribution we see, that thread zero computes the most prime numbers and thread 31 computes the least amount of numbers. Based on the prime number theory, this makes sense because as bigger the numbers are, as less prime numbers can be found.
 
 \pagebreak
 
 \section{appendix}
 
 \subsection{measurements of exercise 1}
+
 \begin{table}[h]
 \centering
-
 \label{measuresEx1}
 \begin{tabular}{@{}l||l|l|l|l|l|l|l|@{}}
 number or threads & 1      & 2      & 4      & 8     & 16    & 32    & 64    \\
@@ -301,6 +338,7 @@ time in seconds   & 55.571 & 27.850 & 13.931 & 7.019 & 4.349 & 2.580 & 2.741
 \end{table}
 
 TODO include formula for speed up and speed up table
+
 
 \listoffigures
 
