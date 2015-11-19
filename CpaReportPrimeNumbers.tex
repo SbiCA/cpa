@@ -154,7 +154,7 @@ In figure \ref{ex12execution} are the measured times of executing the program wi
 \end{figure}
 
 
-Since a node of kahan has 32 cores, the execution with 32 threads was the fastest. In addition the performance decreases if the number of threads will be increased. This is shown in figure \ref{ex12execution} and the overhead is even more visible in figure \ref{ex12speedUp} .
+Since a node of kahan has 32 cores, the execution with 32 threads was the fastest. In addition the performance decreases if the number of threads will be increased to more than 32 threads. This is shown in figure \ref{ex12execution} and the overhead is even more visible in figure \ref{ex12speedUp} .
 As a result of this, the best speedup will be achieved with one thread for each processor.
 
 \begin{figure}[h]
@@ -334,10 +334,22 @@ number or threads & 1      & 2      & 4      & 8     & 16    & 32    & 64    \\
 \hline	
 time in seconds   & 55.571 & 27.850 & 13.931 & 7.019 & 4.349 & 2.580 & 2.741
 \end{tabular}
-\caption{execution time}
+\caption{execution time exercise 1}
 \end{table}
 
-TODO include formula for speed up and speed up table
+\begin{table}[h]
+\centering
+\label{measuresSpeedUpEx1}
+\begin{tabular}{@{}l||l|l|l|l|l|l|l|@{}}
+number or threads & 1      & 2      & 4      & 8     & 16    & 32    & 64    \\
+\hline	
+speed up S(n,p)   & 1.000 & 1.995 & 3.989 & 7.917 & 12.779 & 21.539 & 20.273
+\end{tabular}
+\caption{speed up exercise 1}
+\end{table}
+
+Speed Up Formula
+$$ S(n,p) = \frac{t(n)}{t(n,p)} $$
 
 
 \listoffigures
