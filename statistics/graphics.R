@@ -30,3 +30,15 @@ plot(speedUp, ylab="speed up",type="b",col="red",xlab="# threads",xaxt = "n")
 
 axis(1,at=1:7, lab=numberOfThreads)
 title(main="speed up s(n,p)", font.main=4)
+
+
+#calculate efficiency 
+efficiency<-speedUp/numberOfThreads
+round(efficiency,digits=3)
+plot(efficiency, ylab="efficiency",type="b",col="red",xlab="# threads",xaxt = "n")
+
+axis(1,at=1:7, lab=numberOfThreads)
+title(main="efficiency e(n,p)", font.main=4)
+
+
+

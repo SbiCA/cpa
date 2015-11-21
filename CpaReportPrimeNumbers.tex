@@ -29,9 +29,12 @@
 
 \usepackage{listings} 
 \usepackage{xcolor} 
+\usepackage{caption}
+\usepackage{subcaption}
 
 \definecolor{mygray}{rgb}{0.4,0.4,0.4}
 \definecolor{myorange}{rgb}{1.0,0.4,0}
+
 %http://tex.stackexchange.com/questions/144503/why-does-a-space-destroy-my-keywords-in-listingspackage
 
 \lstset{
@@ -102,11 +105,10 @@ Instructor: & Francisco Javier Piris Ruano % Instructor/supervisor
 
 \section{Biggest prime storable in 8 bytes}
 
-The Source for the solution is in the file \textit{primo\textunderscore  grande.c}. In the figure \ref{code_primogrande} you will see the changes applied to function primo of the original code.
+The Source for the solution is in the file \textit{primo\textunderscore  grande.c}. In the figure \ref{fig:code_primogrande} you will see the changes applied to function primo of the original code.
 
 
 \begin{figure}[h]
-\label{code_primogrande}
 \begin{lstlisting}
    int numberOfThreads;
    int offset;
@@ -132,14 +134,15 @@ The Source for the solution is in the file \textit{primo\textunderscore  grande.
     }
 \end{lstlisting} 
 \caption{code changes primo grande}
+\label{fig:code_primogrande}
 \end{figure}
 
 
 \subsection{Compiling without OpenMP}
 
-To use the program in both ways, either with or without OpenMP , we used the preproccessor directives. Now the compiler decides upon the arguments if the code will use OpenMP or not for the passages where OpenMP function calls will happen.\\
+To use the program in both ways, either with or without OpenMP , we used the preprocessor directives. Now the compiler decides upon the arguments if the code will use OpenMP or not for the passages where OpenMP function calls will happen.\\
 
-This can be seen in figure \ref{code_primogrande} in lines 3-10 and 14-19.
+This can be seen in figure \ref{fig:code_primogrande} in lines 3-10 and 14-19.
 
 \pagebreak
 \subsection{Time measurement of parallelized version}
@@ -159,12 +162,20 @@ As a result of this, the best speedup will be achieved with one thread for each 
 
 \begin{figure}[h]
 \centering
-  \includegraphics[scale=0.35]{statistics/Ex12SpeedUpGraph.png}
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[scale=0.25]{statistics/Ex12SpeedUpGraph.png}
 	\caption{speed up for exercise 1.2}
-	\label{ex12speedUp}
+	\label{ex12speedUp}	
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+     \includegraphics[scale=0.25]{statistics/Ex12EfficiencyGraph.png}
+	\caption{efficiency graph of exercise 1.2}
+	\label{ex12efficiency}	
+\end{minipage}
 \end{figure}
 
-\pagebreak
 
 \section{Count primes in a range}
 
@@ -200,6 +211,8 @@ The sequential execution took 289.24 seconds.
 
 Based on the exercise a measurement for the most inner loop does not make much sense, because it is really inefficient. Every execution without an if clause in the pragma omp definiton was terminated because of the walltime exceeding.
 
+\pagebreak
+
 \subsection{Measurement parallel most outer loop}
 
 The most efficient way to speedup the given exercise code is by parallelize the most outer loop. 
@@ -226,9 +239,11 @@ The following code changes where made to achieve this:
 
 The environment variable \textit{OMP\textunderscore NUM\textunderscore THREADS} was set to 32 Threads to achieve the best speedup.\\
 
+\pagebreak
+
 \subsubsection{scheduling distribution}
 
-We checked the execution time for the same code with different scheduling distributions. Therefore we changed the environment variable \textit{OMP\textunderscore SCHEDULE}
+We checked the execution time for the same code with different scheduling distributions. Therefore we changed the environment variable \textit{OMP\textunderscore SCHEDULE} .
 
 \begin{table}[h]
 \centering
@@ -248,13 +263,13 @@ We checked the execution time for the same code with different scheduling distri
     dynamic & 2 & 13.52 \\
     \hline
 \end{tabular}
-\caption{measurement result for different schedule distribution}
+\caption{measurement results for different schedule distribution}
 \end{table}
 
 \subsection{Exercise 1: Without reduction clause}
 \label{ex21}
 
-The whole parallelization can be done without using a reduction for the variable n. In this code segment we used an openMP atomic clause to achieve the same behaviour.
+The whole parallelization can be done without using a reduction for the variable n. In this code segment we used an OpenMP atomic clause to achieve the same behaviour.
 The source is in the file \textit{primo\textunderscore numeros\textunderscore without\textunderscore reduction.c}.
 
 \begin{figure}[h]
@@ -281,8 +296,7 @@ The source is in the file \textit{primo\textunderscore numeros\textunderscore wi
 \subsection{Exercise 2: Printing found primes for each thread}
 \label{ex22}
 
-To find out which thread found how many prime numbers, we had to save the information for each thread in a vector. We use a vector based on the index of each thread and because of this we do not have to care about race conditions or any other problem based on public variables.
-The source is in the file \textit{primo\textunderscore numeros\textunderscore threadinfo.c}.
+To find out which thread found how many prime numbers, we had to save the information for each thread in a vector. We use a vector based on the index of each thread and therefore we do not have to care about race conditions or any other problem based on public variables. The source is in the file \textit{primo\textunderscore numeros\textunderscore threadinfo.c}.
 
 \begin{figure}[h]
 \label{code_printprimeseachthread}
@@ -318,13 +332,20 @@ The source is in the file \textit{primo\textunderscore numeros\textunderscore th
 \caption{printing found primes by each thread}
 \end{figure}
 
-If we run this code with a static distribution we see, that thread zero computes the most prime numbers and thread 31 computes the least amount of numbers. Based on the prime number theory, this makes sense because as bigger the numbers are, as less prime numbers can be found.
+If we run this code with a static distribution we see, that thread zero computes the most prime numbers and thread 31 computes the least amount of numbers. Based on the prime number theory ,the bigger the numbers to look for primes are, the less prime numbers can be found. This reflects in the results of out measurements.
 
 \pagebreak
 
-\section{appendix}
+\section{Appendix}
 
-\subsection{measurements of exercise 1}
+\subsection{Formulas}
+Speed Up 
+$$ S(n,p) = \frac{t(n)}{t(n,p)} $$
+
+Efficiency 
+$$ E(n,p) = \frac{S(n,p)}{p} $$
+
+\subsection{Measurements of exercise 1}
 
 \begin{table}[h]
 \centering
@@ -348,8 +369,17 @@ speed up S(n,p)   & 1.000 & 1.995 & 3.989 & 7.917 & 12.779 & 21.539 & 20.273
 \caption{speed up exercise 1}
 \end{table}
 
-Speed Up Formula
-$$ S(n,p) = \frac{t(n)}{t(n,p)} $$
+\begin{table}[h]
+\centering
+\label{measuresSpeedUpEx1}
+\begin{tabular}{@{}l||l|l|l|l|l|l|l|@{}}
+number or threads & 1      & 2      & 4      & 8     & 16    & 32    & 64    \\
+\hline	
+efficiency E(n,p)   & 1.000 & 0.998  & 0.997 & 0.990 & 0.799 & 0.673 & 0.317
+\end{tabular}
+\caption{efficiency exercise 1}
+\end{table}
+
 
 
 \listoffigures
