@@ -1,0 +1,29 @@
+primo_numeros_outerloop with:
+OMP_NUM_THREADS=32
+OMP_SCHEDULE=static,0
+looptime: 17.584710 seconds 
+Entre el 1 y el 100000000 hay 5761456 numeros primos.
+---------------------------------
+primo_numeros_outerloop with:
+OMP_NUM_THREADS=32
+OMP_SCHEDULE=static,1
+looptime: 13.584585 seconds 
+Entre el 1 y el 100000000 hay 5761456 numeros primos.
+---------------------------------
+primo_numeros_outerloop with:
+OMP_NUM_THREADS=32
+OMP_SCHEDULE=dynamic
+looptime: 14.182376 seconds 
+Entre el 1 y el 100000000 hay 5761456 numeros primos.
+---------------------------------
+primo_numeros_outerloop with:
+OMP_NUM_THREADS=32
+OMP_SCHEDULE=dynamic,1
+looptime: 14.231817 seconds 
+Entre el 1 y el 100000000 hay 5761456 numeros primos.
+---------------------------------
+primo_numeros_outerloop with:
+OMP_NUM_THREADS=32
+OMP_SCHEDULE=dynamic,2
+looptime: 13.525155 seconds 
+Entre el 1 y el 100000000 hay 5761456 numeros primos.
